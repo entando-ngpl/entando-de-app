@@ -118,7 +118,7 @@ jobs:
   # dockerization
   dockerization:
     needs: [ 'release' ]
-    if: ${{ steps.release.release.outputs.dockerization-needed }}
+    if: ${{ needs.release.release.outputs.dockerization-needed }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -140,6 +140,6 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ steps.release.release.outputs.docker-image }}
+          tags: ${{ needs.release.release.outputs.docker-image }}
       - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+        run: echo ${{ needs.docker_build.outputs.digest }}
