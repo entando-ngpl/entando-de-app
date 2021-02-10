@@ -100,6 +100,7 @@ jobs:
             echo "::set-output name=DOCKERIZATION_NEEDED::true"
             echo "::set-output name=DOCKER_IMAGE::${{ secrets.DOCKER_USERNAME }}/${{ steps.entando-core-bom-update.outputs.ARTIFACT_ID }}:${{ steps.entando-core-bom-update.outputs.TAG_VALUE }}"
 
+            MATRIX_PARAMS_COMBINATIONS=""
             for f in ./Dockerfile*; do
               if [[ $f == *"eap"* ]]; then
                 dockerSuffix="eap"
@@ -109,6 +110,10 @@ jobs:
               MATRIX_PARAMS_COMBINATIONS="$MATRIX_PARAMS_COMBINATIONS\n{\"docker-file\": \"$f\", \"docker-suffix\": \"$dockerSuffix\"},"
             done
             echo ::set-output name=matrix-combinations::{\"include\":[$MATRIX_PARAMS_COMBINATIONS]}
+
+            echo "DOCKERIZATION_NEEDED: $DOCKERIZATION_NEEDED"
+            echo "DOCKER_IMAGE: $DOCKER_IMAGE"
+            echo "MATRIX_PARAMS_COMBINATIONS: $MATRIX_PARAMS_COMBINATIONS"
           else
             eho "NO DOCKER FILE DETECTED"
           fi
