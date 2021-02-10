@@ -1350,4 +1350,12 @@
 
         </plugins>
     </reporting>
+
+    <distributionManagement>
+        <repository>
+            <id>ng-pipelines</id>
+            <name>Entando Nexus</name>
+            <url>https://nexus-jx.apps.serv.run/repository/ngpl-maven-releases/</url>
+        </repository>
+    </distributionManagement>
 </project>
