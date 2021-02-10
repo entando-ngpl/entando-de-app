@@ -30,7 +30,7 @@ jobs:
           server-password: MAVEN_PASSWORD
       - name: "Publish package"
         run: |
-          mvn --batch-mode deploy -X
+          mvn --batch-mode deploy -DskipTests
         env:
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
