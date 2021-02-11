@@ -21,13 +21,13 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: "Set up Entando Nexus Repository"
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-          server-id: ng-pipelines
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
+#      - name: "Set up Entando Nexus Repository"
+#        uses: actions/setup-java@v1
+#        with:
+#          java-version: 11
+#          server-id: ng-pipelines
+#          server-username: MAVEN_USERNAME
+#          server-password: MAVEN_PASSWORD
 #      - name: "Publish package"
 #        run: |
 #          mvn --batch-mode deploy -DskipTests
@@ -41,7 +41,7 @@ jobs:
           ENTANDO_CORE_BOM_REPO_URL: "https://github.com/entando-ngpl/entando-core-bom.git"
           TOKEN_SECRET: ${{ secrets.NGPL_TOKEN }}
         run: |
-          mvn --batch-mode package -DskipTests
+#          mvn --batch-mode package -DskipTests
 
           tagValue=$(echo "${{ github.ref }}" | sed 's/.*\///' | sed 's/^v\(.*\)/\1/')
           echo "TAG VALUE $tagValue"
@@ -134,12 +134,12 @@ jobs:
           DOCKER_NEEDED: ${{ needs.release.outputs.dockerization-needed }}
           DOCKER_IMAGE: ${{ needs.release.outputs.docker-image }}
           MATRIX_COMBINATIONS: ${{ needs.release.outputs.matrix-combinations }}
-          MATRIX_COMBINATIONS_JSON: ${{ fromJson(needs.release.outputs.matrix-combinations) }}
+#          MATRIX_COMBINATIONS_JSON: ${{ fromJson(needs.release.outputs.matrix-combinations) }}
         run: |
           echo "DOCKER_NEEDED $DOCKER_NEEDED"
           echo "DOCKER_IMAGE $DOCKER_IMAGE"
           echo "MATRIX_COMBINATIONS $MATRIX_COMBINATIONS"
-          echo "MATRIX_COMBINATIONS_JSON $MATRIX_COMBINATIONS_JSON"
+#          echo "MATRIX_COMBINATIONS_JSON $MATRIX_COMBINATIONS_JSON"
           #echo "::set-output name=docker-image-name::$DOCKER_IMAGE${{ matrix.docker-suffix }}"
 #      - name: Set up QEMU
 #        uses: docker/setup-qemu-action@v1
