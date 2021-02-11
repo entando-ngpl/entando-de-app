@@ -33,13 +33,13 @@ jobs:
     steps:
       - name: "Vars dump"
         env:
-          DOCKER_NEEDED: ${{ needs.release.release.outputs.dockerization }}
+          DOCKER_NEEDED: ${{ needs.release.outputs.dockerization }}
           DOCKER_IMAGE: ${{ needs.release.outputs.dockerimage }}
         run: |
           echo "DOCKER_NEEDED $DOCKER_NEEDED"
           echo "DOCKER_IMAGE $DOCKER_IMAGE"
 
-          echo ${{ needs.release.release.outputs.dockerization }} ${{ needs.release.release.outputs.dockerimage }}
+          echo ${{ needs.release.outputs.dockerization }} ${{ needs.release.outputs.dockerimage }}
 
 #      - name: Set up QEMU
 #        uses: docker/setup-qemu-action@v1
