@@ -41,10 +41,11 @@ jobs:
           echo "DOCKER_NEEDED $DOCKER_NEEDED"
           echo "DOCKER_IMAGE $DOCKER_IMAGE"
           echo "matrix-combination ${{ needs.release.outputs.matrix-combination }}"
+          echo "json-matrix-combination ${{ fromJson(needs.release.outputs.matrix-combination) }}"
 
-          JSON='{"include":[{"docker-file": "./Dockerfile.eap", "docker-suffix": "-eap"},{"docker-file": "./Dockerfile.wildfly", "docker-suffix": "-wildfly"},]}'
-          MATRIX_VALUE=$(fromJson("$JSON"))
-          echo "MARIX_VALUE: $MARIX_VALUE"
+#          JSON='{"include":[{"docker-file": "./Dockerfile.eap", "docker-suffix": "-eap"},{"docker-file": "./Dockerfile.wildfly", "docker-suffix": "-wildfly"},]}'
+#          MATRIX_VALUE=$(fromJson("$JSON"))
+#          echo "MARIX_VALUE: $MARIX_VALUE"
 
 #      - name: Set up QEMU
 #        uses: docker/setup-qemu-action@v1
