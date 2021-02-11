@@ -2,8 +2,12 @@ name: Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - 'master'
+#on:
+#  push:
+#    tags:
+#      - 'v*'
 
 jobs:
   release:
@@ -134,7 +138,7 @@ jobs:
           DOCKER_NEEDED: ${{ needs.release.outputs.dockerization-needed }}
           DOCKER_IMAGE: ${{ needs.release.outputs.docker-image }}
           MATRIX_COMBINATIONS: ${{ needs.release.outputs.matrix-combinations }}
-                    MATRIX_COMBINATIONS_JSON: ${{ fromJson(needs.release.outputs.matrix-combinations) }}
+          # MATRIX_COMBINATIONS_JSON: ${{ fromJson(needs.release.outputs.matrix-combinations) }}
         run: |
           echo "DOCKER_NEEDED $DOCKER_NEEDED"
           echo "DOCKER_IMAGE $DOCKER_IMAGE"
