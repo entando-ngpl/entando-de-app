@@ -18,7 +18,7 @@ jobs:
         run: |
           echo "::set-output name=DOCKERIZATION_NEEDED::true"
           echo "::set-output name=DOCKER_IMAGE::myorg/myimage:1.0.0"
-          echo "::set-output name=matrix-combinations::{\"include\":[{\"docker-file\": \"./Dockerfile.eap\", \"docker-suffix\": \"-eap\"},{\"docker-file\": \"./Dockerfile.wildfly\", \"docker-suffix\": \"-wildfly\"},]}"
+          echo "::set-output name=matrix-combinations::{\"include\":[{\"docker-file\": \"./Dockerfile.eap\", \"docker-suffix\": \"-eap\"},{\"docker-file\": \"./Dockerfile.wildfly\", \"docker-suffix\": \"-wildfly\"}]}"
     outputs:
       dockerization-needed: ${{ steps.dockerization-configuration.outputs.DOCKERIZATION_NEEDED }}
       dockerimage: ${{ steps.dockerization-configuration.outputs.DOCKER_IMAGE }}
