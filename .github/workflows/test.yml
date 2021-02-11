@@ -29,18 +29,19 @@ jobs:
     needs: release
     if: ${{ needs.release.outputs.dockerization-needed }}
     runs-on: ubuntu-latest
-    strategy:
-      matrix: ${{ fromJson(needs.release.outputs.matrix-combinations) }}
+#    strategy:
+#      matrix: ${{ fromJson(needs.release.outputs.matrix-combinations) }}
     steps:
       - name: "Vars dump"
         env:
           DOCKER_NEEDED: ${{ needs.release.outputs.dockerization-needed }}
           DOCKER_IMAGE: ${{ needs.release.outputs.dockerimage }}
+          MARIX_VALUE: ${{ fromJson(needs.release.outputs.matrix-combinations) }}
         run: |
           echo "DOCKER_NEEDED $DOCKER_NEEDED"
           echo "DOCKER_IMAGE $DOCKER_IMAGE"
 
-          echo ${{ needs.release.outputs.dockerization-needed }} ${{ needs.release.outputs.dockerimage }}
+          echo "MARIX_VALUE: $MARIX_VALUE"
 
 #      - name: Set up QEMU
 #        uses: docker/setup-qemu-action@v1
