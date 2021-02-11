@@ -141,7 +141,7 @@ jobs:
           # MATRIX_COMBINATIONS_JSON: ${{ fromJson(needs.release.outputs.matrix-combinations) }}
         run: |
           #echo "DOCKER_NEEDED $DOCKER_NEEDED"
-          #echo "DOCKER_IMAGE $DOCKER_IMAGE"
+          echo "DOCKER_IMAGE $DOCKER_IMAGE"
           #echo "MATRIX_COMBINATIONS $MATRIX_COMBINATIONS"
           #echo "MATRIX_COMBINATIONS_JSON $MATRIX_COMBINATIONS_JSON"
           echo "::set-output name=docker-image-name::$DOCKER_IMAGE${{ matrix.docker-suffix }}"
