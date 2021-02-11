@@ -41,7 +41,8 @@ jobs:
           echo "DOCKER_NEEDED $DOCKER_NEEDED"
           echo "DOCKER_IMAGE $DOCKER_IMAGE"
 
-          MATRIX_VALUE=fromJson('{"include":[{"docker-file": "./Dockerfile.eap", "docker-suffix": "-eap"},{"docker-file": "./Dockerfile.wildfly", "docker-suffix": "-wildfly"},]}')
+          JSON='{"include":[{"docker-file": "./Dockerfile.eap", "docker-suffix": "-eap"},{"docker-file": "./Dockerfile.wildfly", "docker-suffix": "-wildfly"},]}'
+          MATRIX_VALUE=$(fromJson("$JSON"))
           echo "MARIX_VALUE: $MARIX_VALUE"
 
 #      - name: Set up QEMU
