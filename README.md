@@ -7,7 +7,7 @@ TODO instructions on Docker images
 If you need to develop fast against this project, you can run the application using the jetty-maven-plugin.
 You will need though to use the correct profiles to run it.
 
-Here the command to use 
+Here the command to use and reuse
 ```
 mvn clean package jetty:run-war -Pjetty-local -Pderby
 ```
