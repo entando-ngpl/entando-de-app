@@ -19,12 +19,12 @@ jobs:
           echo "::set-output name=DOCKERIZATION_NEEDED::true"
           echo "::set-output name=DOCKER_IMAGE::myorg/myimage:1.0.0"
     outputs:
-      dockerization_needed: ${{ steps.dockerization-configuration.outputs.DOCKERIZATION_NEEDED }}
-      docker_image: ${{ steps.dockerization-configuration.outputs.DOCKER_IMAGE }}
+      dockerization: ${{ steps.dockerization-configuration.outputs.DOCKERIZATION_NEEDED }}
+      dockerimage: ${{ steps.dockerization-configuration.outputs.DOCKER_IMAGE }}
 
   # dockerization
   dockerization:
-    needs: [ 'release' ]
+    needs: release
 #    if: ${{ needs.release.release.outputs.dockerization-needed }}
     runs-on: ubuntu-latest
 #    strategy:
@@ -33,11 +33,14 @@ jobs:
     steps:
       - name: "Vars dump"
         env:
-          DOCKER_NEEDED: ${{ needs.release.release.outputs.dockerization_needed }}
-          DOCKER_IMAGE: ${{ steps.dockerization-configuration.outputs.docker_image }}
+          DOCKER_NEEDED: ${{ needs.release.release.outputs.dockerization }}
+          DOCKER_IMAGE: ${{ needs.release.outputs.dockerimage }}
         run: |
           echo "DOCKER_NEEDED $DOCKER_NEEDED"
           echo "DOCKER_IMAGE $DOCKER_IMAGE"
+
+          echo ${{ needs.release.release.outputs.dockerization }} ${{ needs.release.release.outputs.dockerimage }}
+
 #      - name: Set up QEMU
 #        uses: docker/setup-qemu-action@v1
 #      - name: Set up Docker Buildx
