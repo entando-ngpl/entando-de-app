@@ -33,7 +33,7 @@ jobs:
       matrix: ${{ fromJson(needs.release.outputs.matrix-combinations) }}
     steps:
       - name: "Vars dump"
-        env:c
+        env:
           DOCKER_NEEDED: ${{ needs.release.outputs.dockerization-needed }}
           DOCKER_IMAGE: ${{ needs.release.outputs.dockerimage }}
           # MARIX_VALUE: ${{ fromJson({"include":[{"docker-file": "./Dockerfile.eap", "docker-suffix": "-eap"},{"docker-file": "./Dockerfile.wildfly", "docker-suffix": "-wildfly"},]}) }}
