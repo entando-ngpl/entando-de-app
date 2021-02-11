@@ -134,12 +134,12 @@ jobs:
           DOCKER_NEEDED: ${{ needs.release.outputs.dockerization-needed }}
           DOCKER_IMAGE: ${{ needs.release.outputs.docker-image }}
           MATRIX_COMBINATIONS: ${{ needs.release.outputs.matrix-combinations }}
-#          MATRIX_COMBINATIONS_JSON: ${{ fromJson(needs.release.outputs.matrix-combinations) }}
+                    MATRIX_COMBINATIONS_JSON: ${{ fromJson(needs.release.outputs.matrix-combinations) }}
         run: |
           echo "DOCKER_NEEDED $DOCKER_NEEDED"
           echo "DOCKER_IMAGE $DOCKER_IMAGE"
           echo "MATRIX_COMBINATIONS $MATRIX_COMBINATIONS"
-#          echo "MATRIX_COMBINATIONS_JSON $MATRIX_COMBINATIONS_JSON"
+          #echo "MATRIX_COMBINATIONS_JSON $MATRIX_COMBINATIONS_JSON"
           #echo "::set-output name=docker-image-name::$DOCKER_IMAGE${{ matrix.docker-suffix }}"
 #      - name: Set up QEMU
 #        uses: docker/setup-qemu-action@v1
