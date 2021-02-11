@@ -40,6 +40,7 @@ jobs:
         run: |
           echo "DOCKER_NEEDED $DOCKER_NEEDED"
           echo "DOCKER_IMAGE $DOCKER_IMAGE"
+          echo "matrix-combination ${{ needs.release.outputs.dockerization-needed }}"
 
           JSON='{"include":[{"docker-file": "./Dockerfile.eap", "docker-suffix": "-eap"},{"docker-file": "./Dockerfile.wildfly", "docker-suffix": "-wildfly"},]}'
           MATRIX_VALUE=$(fromJson("$JSON"))
