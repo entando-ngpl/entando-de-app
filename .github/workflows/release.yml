@@ -109,7 +109,7 @@ jobs:
               fi
               MATRIX_PARAMS_COMBINATIONS="$MATRIX_PARAMS_COMBINATIONS{\"docker-file\": \"$f\", \"docker-suffix\": \"$dockerSuffix\"},"
             done
-            MATRIX_PARAMS_COMBINATIONS=${MATRIX_PARAMS_COMBINATIONS: -2}
+            MATRIX_PARAMS_COMBINATIONS=${MATRIX_PARAMS_COMBINATIONS:0:-1}
             echo ::set-output name=matrix-combinations::{\"include\":[$MATRIX_PARAMS_COMBINATIONS]}
 
           else
