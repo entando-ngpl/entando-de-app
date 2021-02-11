@@ -103,8 +103,8 @@ jobs:
           if ls ./Dockerfile* 1> /dev/null 2>&1 ; then
             echo "::set-output name=DOCKERIZATION_NEEDED::true"
             # the can't export secrets between jobs => the docker organization is added in the next job
-            echo "::set-output name=ARTIFACT_ID::${{ steps.entando-core-bom-update.outputs.ARTIFACT_ID }}"
-            echo "::set-output name=TAG_VALUE::${{ steps.entando-core-bom-update.outputs.TAG_VALUE }}"
+            # echo "::set-output name=ARTIFACT_ID::${{ steps.entando-core-bom-update.outputs.ARTIFACT_ID }}"
+            # echo "::set-output name=TAG_VALUE::${{ steps.entando-core-bom-update.outputs.TAG_VALUE }}"
 
             MATRIX_PARAMS_COMBINATIONS=""
             for f in ./Dockerfile*; do
@@ -123,8 +123,8 @@ jobs:
           fi
     outputs:
       dockerization-needed: ${{ steps.dockerization-configuration.outputs.DOCKERIZATION_NEEDED }}
-      artifact-id: ${{ steps.dockerization-configuration.outputs.ARTIFACT_ID }}
-      tag-value: ${{ steps.dockerization-configuration.outputs.TAG_VALUE }}
+      artifact-id: ${{ steps.entando-core-bom-update.outputs.ARTIFACT_ID }}
+      tag-value: ${{ steps.entando-core-bom-update.outputs.TAG_VALUE }}
       matrix-combinations: ${{ steps.dockerization-configuration.outputs.MATRIX_PARAMS_COMBINATIONS }}
 
   # dockerization
