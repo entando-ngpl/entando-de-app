@@ -110,8 +110,8 @@ jobs:
               MATRIX_PARAMS_COMBINATIONS="$MATRIX_PARAMS_COMBINATIONS{\"docker-file\": \"$f\", \"docker-suffix\": \"$dockerSuffix\"},"
             done
             MATRIX_PARAMS_COMBINATIONS=${MATRIX_PARAMS_COMBINATIONS:0:-1}
-            echo ::set-output name=matrix-combinations::{\"include\":[$MATRIX_PARAMS_COMBINATIONS]}
-
+            # echo ::set-output name=matrix-combinations::{\"include\":[$MATRIX_PARAMS_COMBINATIONS]}
+            echo "::set-output name=matrix-combinations::{\"include\":[{\"docker-file\": \"./Dockerfile.eap\", \"docker-suffix\": \"-eap\"},{\"docker-file\": \"./Dockerfile.wildfly\", \"docker-suffix\": \"-wildfly\"}]}"
           else
             eho "NO DOCKER FILE DETECTED"
           fi
