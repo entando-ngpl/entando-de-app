@@ -122,8 +122,8 @@ jobs:
 
   # dockerization
   dockerization:
-    needs: [ 'release' ]
-    if: ${{ needs.release.outputs.dockerization-needed }}
+    needs: release
+#    if: ${{ needs.release.outputs.dockerization-needed }}
     runs-on: ubuntu-latest
     strategy:
       matrix: ${{ fromJson(needs.release.outputs.matrix-combinations) }}
