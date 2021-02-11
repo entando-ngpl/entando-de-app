@@ -102,7 +102,9 @@ jobs:
           # TODO move this code to a starting step responsible to configure the entire workflow?
           if ls ./Dockerfile* 1> /dev/null 2>&1 ; then
             echo "::set-output name=DOCKERIZATION_NEEDED::true"
-            echo "::set-output name=DOCKER_IMAGE::${{ steps.entando-core-bom-update.outputs.ARTIFACT_ID }}:${{ steps.entando-core-bom-update.outputs.TAG_VALUE }}"
+            # the can't export secrets between jobs => the docker organization is added in the next job
+            echo "::set-output name=ARTIFACT_ID::${{ steps.entando-core-bom-update.outputs.ARTIFACT_ID }}"
+            echo "::set-output name=TAG_VALUE::${{ steps.entando-core-bom-update.outputs.TAG_VALUE }}"
 
             MATRIX_PARAMS_COMBINATIONS=""
             for f in ./Dockerfile*; do
@@ -121,7 +123,8 @@ jobs:
           fi
     outputs:
       dockerization-needed: ${{ steps.dockerization-configuration.outputs.DOCKERIZATION_NEEDED }}
-      docker-image: ${{ steps.dockerization-configuration.outputs.DOCKER_IMAGE }}
+      artifact-id: ${{ steps.dockerization-configuration.outputs.ARTIFACT_ID }}
+      tag-value: ${{ steps.dockerization-configuration.outputs.TAG_VALUE }}
       matrix-combinations: ${{ steps.dockerization-configuration.outputs.MATRIX_PARAMS_COMBINATIONS }}
 
   # dockerization
@@ -136,7 +139,8 @@ jobs:
         id: set-docker-image-name
         env:
           DOCKER_NEEDED: ${{ needs.release.outputs.dockerization-needed }}
-          DOCKER_IMAGE: ${{ needs.release.outputs.docker-image }}
+          ARTIFACT_ID: ${{ needs.release.outputs.artifact-id }}
+          TAG_VALUE: ${{ needs.release.outputs.tag-value }}
           MATRIX_COMBINATIONS: ${{ needs.release.outputs.matrix-combinations }}
           # MATRIX_COMBINATIONS_JSON: ${{ fromJson(needs.release.outputs.matrix-combinations) }}
         run: |
@@ -144,7 +148,8 @@ jobs:
           echo "DOCKER_IMAGE $DOCKER_IMAGE"
           #echo "MATRIX_COMBINATIONS $MATRIX_COMBINATIONS"
           #echo "MATRIX_COMBINATIONS_JSON $MATRIX_COMBINATIONS_JSON"
-          echo "::set-output name=docker-image-name::$DOCKER_IMAGE${{ matrix.docker-suffix }}"
+          echo "::set-output name=docker-image-name:: ${{ secrets.DOCKER_USERNAME }}/$ARTIFACT_ID${{ matrix.docker-suffix }}:$TAG_VALUE"
+          # echo "::set-output name=docker-image-name::$DOCKER_IMAGE${{ matrix.docker-suffix }}"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -161,7 +166,7 @@ jobs:
           context: .
           file: ${{ matrix.docker-file }}
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/${{ steps.set-docker-image-name.outputs.docker-image-name }}
+          tags: ${{ steps.set-docker-image-name.outputs.docker-image-name }}
       - name: Image digest
         run: echo ${{ needs.docker_build.outputs.digest }}
 
