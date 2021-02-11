@@ -61,6 +61,9 @@ jobs:
 
           echo "##### ARTIFACT ID $artifactId"
 
+          echo "::set-output name=TAG_VALUE::$tagValue"
+          echo "::set-output name=ARTIFACT_ID::$artifactId"
+
           # clone entando-core-bom
           mkdir "$ENTANDO_CORE_BOM_FOLDER" && cd "$ENTANDO_CORE_BOM_FOLDER"
           authUrl=$(echo "$ENTANDO_CORE_BOM_REPO_URL" | sed "s|://|://$TOKEN_SECRET@|")
@@ -92,9 +95,6 @@ jobs:
           git add pom.xml
           git commit -m "Bumped $artifactId to $tagValue"
           git push
-
-          echo "::set-output name=TAG_VALUE::$tagValue"
-          echo "::set-output name=ARTIFACT_ID::$artifactId"
       - name: "Check Dockerization needed"
         id: dockerization-configuration
         run: |
