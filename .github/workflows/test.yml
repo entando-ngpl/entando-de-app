@@ -1,0 +1,64 @@
+name: TEST
+
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - name: "Check Dockerization needed"
+        id: dockerization-configuration
+        run: |
+          echo "::set-output name=DOCKERIZATION_NEEDED::true"
+          echo "::set-output name=DOCKER_IMAGE::myorg/myimage:1.0.0"
+          echo "::set-output name=matrix-combinations::{\"include\":[{\"docker-file\": \"./Dockerfile.eap\", \"docker-suffix\": \"-eap\"},{\"docker-file\": \"./Dockerfile.wildfly\", \"docker-suffix\": \"-wildfly\"},]}"
+    outputs:
+      dockerization-needed: ${{ steps.dockerization-configuration.outputs.DOCKERIZATION_NEEDED }}
+      dockerimage: ${{ steps.dockerization-configuration.outputs.DOCKER_IMAGE }}
+      matrix-combination: ${{ steps.dockerization-configuration.outputs.matrix-combinations }}
+
+  # dockerization
+  dockerization:
+    needs: release
+    if: ${{ needs.release.release.outputs.dockerization-needed }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        matrix: ${{ fromJson(needs.release.outputs.matrix-combinations) }}
+    steps:
+      - name: "Vars dump"
+        env:
+          DOCKER_NEEDED: ${{ needs.release.outputs.dockerization-needed }}
+          DOCKER_IMAGE: ${{ needs.release.outputs.dockerimage }}
+        run: |
+          echo "DOCKER_NEEDED $DOCKER_NEEDED"
+          echo "DOCKER_IMAGE $DOCKER_IMAGE"
+
+          echo ${{ needs.release.outputs.dockerization-needed }} ${{ needs.release.outputs.dockerimage }}
+
+#      - name: Set up QEMU
+#        uses: docker/setup-qemu-action@v1
+#      - name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v1
+#      - name: Login to DockerHub
+#        uses: docker/login-action@v1
+#        with:
+#          username: ${{ secrets.DOCKER_USERNAME }}
+#          password: ${{ secrets.DOCKER_TOKEN }}
+#      - name: Build and push
+#        id: docker_build
+#        uses: docker/build-push-action@v2
+#        with:
+#          context: .
+#          file: ./Dockerfile
+#          push: true
+#          tags: ${{ needs.release.release.outputs.docker-image }}
+#      - name: Image digest
+#        run: echo ${{ needs.docker_build.outputs.digest }}
