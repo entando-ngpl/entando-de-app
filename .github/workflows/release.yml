@@ -102,7 +102,7 @@ jobs:
           # TODO move this code to a starting step responsible to configure the entire workflow?
           if ls ./Dockerfile* 1> /dev/null 2>&1 ; then
             echo "::set-output name=DOCKERIZATION_NEEDED::true"
-            echo "::set-output name=DOCKER_IMAGE::${{ secrets.DOCKER_USERNAME }}/${{ steps.entando-core-bom-update.outputs.ARTIFACT_ID }}:${{ steps.entando-core-bom-update.outputs.TAG_VALUE }}"
+            echo "::set-output name=DOCKER_IMAGE::${{ steps.entando-core-bom-update.outputs.ARTIFACT_ID }}:${{ steps.entando-core-bom-update.outputs.TAG_VALUE }}"
 
             MATRIX_PARAMS_COMBINATIONS=""
             for f in ./Dockerfile*; do
@@ -161,7 +161,7 @@ jobs:
           context: .
           file: ${{ matrix.docker-file }}
           push: true
-          tags: ${{ steps.set-docker-image-name.outputs.docker-image-name }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/${{ steps.set-docker-image-name.outputs.docker-image-name }}
       - name: Image digest
         run: echo ${{ needs.docker_build.outputs.digest }}
 
