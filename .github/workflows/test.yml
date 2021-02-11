@@ -29,8 +29,8 @@ jobs:
     needs: release
     if: ${{ needs.release.outputs.dockerization-needed }}
     runs-on: ubuntu-latest
-#    strategy:
-#      matrix: ${{ fromJson(needs.release.outputs.matrix-combinations) }}
+    strategy:
+      matrix: ${{ fromJson(needs.release.outputs.matrix-combination) }}
     steps:
       - name: "Vars dump"
         env:
