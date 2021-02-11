@@ -25,19 +25,19 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-#      - name: "Set up Entando Nexus Repository"
-#        uses: actions/setup-java@v1
-#        with:
-#          java-version: 11
-#          server-id: ng-pipelines
-#          server-username: MAVEN_USERNAME
-#          server-password: MAVEN_PASSWORD
-#      - name: "Publish package"
-#        run: |
-#          mvn --batch-mode deploy -DskipTests
-#        env:
-#          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-#          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+      - name: "Set up Entando Nexus Repository"
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+          server-id: ng-pipelines
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+      - name: "Publish package"
+        run: |
+          mvn --batch-mode deploy -DskipTests
+        env:
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       - name: "Update entando-core-bom"
         id: entando-core-bom-update
         env:
@@ -142,7 +142,6 @@ jobs:
           ARTIFACT_ID: ${{ needs.release.outputs.artifact-id }}
           TAG_VALUE: ${{ needs.release.outputs.tag-value }}
           MATRIX_COMBINATIONS: ${{ needs.release.outputs.matrix-combinations }}
-          # MATRIX_COMBINATIONS_JSON: ${{ fromJson(needs.release.outputs.matrix-combinations) }}
         run: |
           mvn --batch-mode package -DskipTests
           echo "::set-output name=docker-image-name::${{ secrets.DOCKER_USERNAME }}/$ARTIFACT_ID${{ matrix.docker-suffix }}:$TAG_VALUE"
