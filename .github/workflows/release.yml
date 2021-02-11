@@ -122,7 +122,7 @@ jobs:
     outputs:
       dockerization-needed: ${{ steps.dockerization-configuration.outputs.DOCKERIZATION_NEEDED }}
       docker-image: ${{ steps.dockerization-configuration.outputs.DOCKER_IMAGE }}
-      matrix-combinations: ${{ steps.dockerization-configuration.outputs.MATRIX_PARAMS_COMBINATIONS }}
+      matrix-combinations: ${{ steps.dockerization-configuration.outputs.matrix-combinations }}
 
   # dockerization
   dockerization:
