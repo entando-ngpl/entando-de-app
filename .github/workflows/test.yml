@@ -36,11 +36,12 @@ jobs:
         env:
           DOCKER_NEEDED: ${{ needs.release.outputs.dockerization-needed }}
           DOCKER_IMAGE: ${{ needs.release.outputs.dockerimage }}
-          MARIX_VALUE: ${{ fromJson(needs.release.outputs.matrix-combinations) }}
+          # MARIX_VALUE: ${{ fromJson({"include":[{"docker-file": "./Dockerfile.eap", "docker-suffix": "-eap"},{"docker-file": "./Dockerfile.wildfly", "docker-suffix": "-wildfly"},]}) }}
         run: |
           echo "DOCKER_NEEDED $DOCKER_NEEDED"
           echo "DOCKER_IMAGE $DOCKER_IMAGE"
 
+          MATRIX_VALUE=fromJson('{"include":[{"docker-file": "./Dockerfile.eap", "docker-suffix": "-eap"},{"docker-file": "./Dockerfile.wildfly", "docker-suffix": "-wildfly"},]}')
           echo "MARIX_VALUE: $MARIX_VALUE"
 
 #      - name: Set up QEMU
