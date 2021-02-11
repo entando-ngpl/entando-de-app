@@ -103,11 +103,11 @@ jobs:
             MATRIX_PARAMS_COMBINATIONS=""
             for f in ./Dockerfile*; do
               if [[ $f == *"eap"* ]]; then
-                dockerSuffix="eap"
+                dockerSuffix="-eap"
               elif [[ $f == *"wildfly"* ]]; then
-                dockerSuffix="wildfly"
+                dockerSuffix="-wildfly"
               fi
-              MATRIX_PARAMS_COMBINATIONS="$MATRIX_PARAMS_COMBINATIONS\n{\"docker-file\": \"$f\", \"docker-suffix\": \"$dockerSuffix\"},"
+              MATRIX_PARAMS_COMBINATIONS="$MATRIX_PARAMS_COMBINATIONS{\"docker-file\": \"$f\", \"docker-suffix\": \"$dockerSuffix\"},\n"
             done
             echo ::set-output name=matrix-combinations::{\"include\":[$MATRIX_PARAMS_COMBINATIONS]}
 
@@ -120,33 +120,42 @@ jobs:
     outputs:
       dockerization-needed: ${{ steps.dockerization-configuration.outputs.DOCKERIZATION_NEEDED }}
       docker-image: ${{ steps.dockerization-configuration.outputs.DOCKER_IMAGE }}
-      matrix-combinations: ${{ steps.dockerization-configuration.outputs.test }}
+      matrix-combinations: ${{ steps.dockerization-configuration.outputs.MATRIX_PARAMS_COMBINATIONS }}
 
   # dockerization
   dockerization:
     needs: [ 'release' ]
-    if: ${{ needs.release.release.outputs.dockerization-needed }}
+#    if: ${{ needs.release.release.outputs.dockerization-needed }}
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        matrix: ${{ fromJson(needs.release.outputs.matrix-combinations) }}
+#    strategy:
+#      matrix:
+#        matrix: ${{ fromJson(needs.release.outputs.matrix-combinations) }}
     steps:
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_TOKEN }}
-      - name: Build and push
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{ needs.release.release.outputs.docker-image }}
-      - name: Image digest
-        run: echo ${{ needs.docker_build.outputs.digest }}
+      - name: "Vars dump"
+        env:
+          DOCKER_NEEDED: ${{ needs.release.release.outputs.dockerization-needed }}
+          DOCKER_IMAGE: ${{ steps.dockerization-configuration.outputs.DOCKER_IMAGE }}
+          MATRIX_COMBINATIONS: ${{ steps.dockerization-configuration.outputs.MATRIX_PARAMS_COMBINATIONS }}
+        run: |
+          echo "DOCKER_NEEDED $DOCKER_NEEDED"
+          echo "DOCKER_IMAGE $DOCKER_IMAGE"
+          echo "MATRIX_COMBINATIONS $MATRIX_COMBINATIONS"
+#      - name: Set up QEMU
+#        uses: docker/setup-qemu-action@v1
+#      - name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v1
+#      - name: Login to DockerHub
+#        uses: docker/login-action@v1
+#        with:
+#          username: ${{ secrets.DOCKER_USERNAME }}
+#          password: ${{ secrets.DOCKER_TOKEN }}
+#      - name: Build and push
+#        id: docker_build
+#        uses: docker/build-push-action@v2
+#        with:
+#          context: .
+#          file: ./Dockerfile
+#          push: true
+#          tags: ${{ needs.release.release.outputs.docker-image }}
+#      - name: Image digest
+#        run: echo ${{ needs.docker_build.outputs.digest }}
