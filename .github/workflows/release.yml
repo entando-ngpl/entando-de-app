@@ -45,8 +45,6 @@ jobs:
           ENTANDO_CORE_BOM_REPO_URL: "https://github.com/entando-ngpl/entando-core-bom.git"
           TOKEN_SECRET: ${{ secrets.NGPL_TOKEN }}
         run: |
-          mvn --batch-mode package -DskipTests
-
           tagValue=$(echo "${{ github.ref }}" | sed 's/.*\///' | sed 's/^v\(.*\)/\1/')
           echo "TAG VALUE $tagValue"
 
@@ -146,12 +144,8 @@ jobs:
           MATRIX_COMBINATIONS: ${{ needs.release.outputs.matrix-combinations }}
           # MATRIX_COMBINATIONS_JSON: ${{ fromJson(needs.release.outputs.matrix-combinations) }}
         run: |
-          #echo "DOCKER_NEEDED $DOCKER_NEEDED"
-          echo "DOCKER_IMAGE $DOCKER_IMAGE"
-          #echo "MATRIX_COMBINATIONS $MATRIX_COMBINATIONS"
-          #echo "MATRIX_COMBINATIONS_JSON $MATRIX_COMBINATIONS_JSON"
-          echo "::set-output name=docker-image-name:: ${{ secrets.DOCKER_USERNAME }}/$ARTIFACT_ID${{ matrix.docker-suffix }}:$TAG_VALUE"
-          # echo "::set-output name=docker-image-name::$DOCKER_IMAGE${{ matrix.docker-suffix }}"
+          mvn --batch-mode package -DskipTests
+          echo "::set-output name=docker-image-name::${{ secrets.DOCKER_USERNAME }}/$ARTIFACT_ID${{ matrix.docker-suffix }}:$TAG_VALUE"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
