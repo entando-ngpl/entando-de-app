@@ -27,7 +27,7 @@ jobs:
   # dockerization
   dockerization:
     needs: release
-    if: ${{ needs.release.release.outputs.dockerization-needed }}
+    if: ${{ needs.release.outputs.dockerization-needed }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
