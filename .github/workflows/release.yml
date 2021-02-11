@@ -107,8 +107,9 @@ jobs:
               elif [[ $f == *"wildfly"* ]]; then
                 dockerSuffix="-wildfly"
               fi
-              MATRIX_PARAMS_COMBINATIONS="$MATRIX_PARAMS_COMBINATIONS{\"docker-file\": \"$f\", \"docker-suffix\": \"$dockerSuffix\"},\n"
+              MATRIX_PARAMS_COMBINATIONS="$MATRIX_PARAMS_COMBINATIONS{\"docker-file\": \"$f\", \"docker-suffix\": \"$dockerSuffix\"},"
             done
+            MATRIX_PARAMS_COMBINATIONS=${MATRIX_PARAMS_COMBINATIONS: -2}
             echo ::set-output name=matrix-combinations::{\"include\":[$MATRIX_PARAMS_COMBINATIONS]}
 
           else
