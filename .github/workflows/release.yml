@@ -1,13 +1,13 @@
 name: Release
 
-on:
-  push:
-    branches:
-      - 'master'
 #on:
 #  push:
-#    tags:
-#      - 'v*'
+#    branches:
+#      - 'master'
+on:
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   release:
@@ -45,7 +45,7 @@ jobs:
           ENTANDO_CORE_BOM_REPO_URL: "https://github.com/entando-ngpl/entando-core-bom.git"
           TOKEN_SECRET: ${{ secrets.NGPL_TOKEN }}
         run: |
-          #mvn --batch-mode package -DskipTests
+          mvn --batch-mode package -DskipTests
 
           tagValue=$(echo "${{ github.ref }}" | sed 's/.*\///' | sed 's/^v\(.*\)/\1/')
           echo "TAG VALUE $tagValue"
@@ -114,23 +114,23 @@ jobs:
               MATRIX_PARAMS_COMBINATIONS="$MATRIX_PARAMS_COMBINATIONS{\"docker-file\": \"$f\", \"docker-suffix\": \"$dockerSuffix\"},"
             done
             MATRIX_PARAMS_COMBINATIONS=${MATRIX_PARAMS_COMBINATIONS:0:-1}
-            # echo ::set-output name=matrix-combinations::{\"include\":[$MATRIX_PARAMS_COMBINATIONS]}
-            echo "::set-output name=matrix-combinations::{\"include\":[{\"docker-file\": \"./Dockerfile.eap\", \"docker-suffix\": \"-eap\"},{\"docker-file\": \"./Dockerfile.wildfly\", \"docker-suffix\": \"-wildfly\"}]}"
+            echo ::set-output name=MATRIX_PARAMS_COMBINATIONS::{\"include\":[$MATRIX_PARAMS_COMBINATIONS]}
+            # echo "::set-output name=matrix-combinations::{\"include\":[{\"docker-file\": \"./Dockerfile.eap\", \"docker-suffix\": \"-eap\"},{\"docker-file\": \"./Dockerfile.wildfly\", \"docker-suffix\": \"-wildfly\"}]}"
           else
             eho "NO DOCKER FILE DETECTED"
           fi
     outputs:
       dockerization-needed: ${{ steps.dockerization-configuration.outputs.DOCKERIZATION_NEEDED }}
       docker-image: ${{ steps.dockerization-configuration.outputs.DOCKER_IMAGE }}
-      matrix-combinations: ${{ steps.dockerization-configuration.outputs.matrix-combinations }}
+      matrix-combinations: ${{ steps.dockerization-configuration.outputs.MATRIX_PARAMS_COMBINATIONS }}
 
   # dockerization
   dockerization:
     needs: release
-#    if: ${{ needs.release.outputs.dockerization-needed }}
+    if: ${{ needs.release.outputs.dockerization-needed }}
     runs-on: ubuntu-latest
-#    strategy:
-#      matrix: ${{ fromJson(needs.release.outputs.matrix-combinations) }}
+    strategy:
+      matrix: ${{ fromJson(needs.release.outputs.matrix-combinations) }}
     steps:
       - name: "Set Docker image name"
         id: set-docker-image-name
@@ -145,23 +145,23 @@ jobs:
           echo "MATRIX_COMBINATIONS $MATRIX_COMBINATIONS"
           #echo "MATRIX_COMBINATIONS_JSON $MATRIX_COMBINATIONS_JSON"
           #echo "::set-output name=docker-image-name::$DOCKER_IMAGE${{ matrix.docker-suffix }}"
-#      - name: Set up QEMU
-#        uses: docker/setup-qemu-action@v1
-#      - name: Set up Docker Buildx
-#        uses: docker/setup-buildx-action@v1
-#      - name: Login to DockerHub
-#        uses: docker/login-action@v1
-#        with:
-#          username: ${{ secrets.DOCKER_USERNAME }}
-#          password: ${{ secrets.DOCKER_TOKEN }}
-#      - name: Build and push
-#        id: docker_build
-#        uses: docker/build-push-action@v2
-#        with:
-#          context: .
-#          file: ${{ matrix.docker-file }}
-#          push: true
-#          tags: ${{ steps.set-docker-image-name.outputs.docker-image-name }}
-#      - name: Image digest
-#        run: echo ${{ needs.docker_build.outputs.digest }}
-#
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ${{ matrix.docker-file }}
+          push: true
+          tags: ${{ steps.set-docker-image-name.outputs.docker-image-name }}
+      - name: Image digest
+        run: echo ${{ needs.docker_build.outputs.digest }}
+
