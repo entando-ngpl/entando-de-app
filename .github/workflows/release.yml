@@ -119,7 +119,7 @@ jobs:
           else
             eho "NO DOCKER FILE DETECTED"
           fi
-      - uses:
+      - name: "Set artifact to upload data"
         id: package-ext
         run: |
           # get the package format from the pom
