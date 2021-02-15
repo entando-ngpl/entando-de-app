@@ -158,7 +158,7 @@ jobs:
           MATRIX_COMBINATIONS: ${{ needs.release.outputs.matrix-combinations }}
         run: |
           # try to download the jar instead of building it again?
-#          time mvn --batch-mode package -DskipTests
+          # time mvn --batch-mode package -DskipTests
           echo "::set-output name=docker-image-name::${{ secrets.DOCKER_USERNAME }}/$ARTIFACT_ID${{ matrix.docker-suffix }}:$TAG_VALUE"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
