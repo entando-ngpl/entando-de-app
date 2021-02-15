@@ -119,10 +119,20 @@ jobs:
           else
             eho "NO DOCKER FILE DETECTED"
           fi
+      - uses:
+        id: package-ext
+        run: |
+          # get the package format from the pom
+          packageExtension=$(xmlstarlet sel -N pom="http://maven.apache.org/POM/4.0.0" -t \
+            -m "/pom:project" \
+            -v "./pom:packaging" pom.xml) || true
+
+          echo "::set-output name=UPLOAD_ARTIFACT_PATH::target/${{ steps.entando-core-bom-update.outputs.ARTIFACT_ID }}.$packageExtension"
+          # echo "::set-output name=PACKAGE_EXT::$packageExtension"
       - uses: actions/upload-artifact@v2
         with:
           name: "$UPLOAD_ARTIFACT_NAME"
-          path: target/*.jar
+          path: "$UPLOAD_ARTIFACT_PATH"
     outputs:
       dockerization-needed: ${{ steps.dockerization-configuration.outputs.DOCKERIZATION_NEEDED }}
       artifact-id: ${{ steps.entando-core-bom-update.outputs.ARTIFACT_ID }}
