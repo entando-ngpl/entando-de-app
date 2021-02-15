@@ -135,7 +135,9 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ steps.package-ext.outputs.UPLOAD_ARTIFACT_NAME }}
-          path: ${{ steps.package-ext.outputs.UPLOAD_ARTIFACT_PATH }}
+          path: |
+            ${{ steps.package-ext.outputs.UPLOAD_ARTIFACT_PATH }}
+            ./target/generated-resources/licenses
     outputs:
       dockerization-needed: ${{ steps.dockerization-configuration.outputs.DOCKERIZATION_NEEDED }}
       artifact-id: ${{ steps.entando-core-bom-update.outputs.ARTIFACT_ID }}
