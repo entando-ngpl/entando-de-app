@@ -165,6 +165,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: ${{ needs.release.outputs.artifcat-id-to-download }}
+          path: ./target
       - name: "Set Docker image name"
         id: set-docker-image-name
         env:
@@ -175,7 +176,6 @@ jobs:
         run: |
           # try to download the jar instead of building it again?
           # time mvn --batch-mode package -DskipTests
-          ls -lR
           echo "::set-output name=docker-image-name::${{ secrets.DOCKER_USERNAME }}/$ARTIFACT_ID${{ matrix.docker-suffix }}:$TAG_VALUE"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
