@@ -128,17 +128,17 @@ jobs:
             -v "./pom:packaging" pom.xml) || true
 
           echo "::set-output name=UPLOAD_ARTIFACT_PATH::target/${{ steps.entando-core-bom-update.outputs.ARTIFACT_ID }}.$packageExtension"
-          # echo "::set-output name=PACKAGE_EXT::$packageExtension"
+          echo "::set-output name=UPLOAD_ARTIFACT_NAME::target/$REPO_NAME-artifact"
       - uses: actions/upload-artifact@v2
         with:
-          name: "$UPLOAD_ARTIFACT_NAME"
-          path: "$UPLOAD_ARTIFACT_PATH"
+          name: ${{ steps.dockerization-configuration.outputs.UPLOAD_ARTIFACT_NAME }}
+          path: ${{ steps.package-ext.outputs.UPLOAD_ARTIFACT_PATH }}
     outputs:
       dockerization-needed: ${{ steps.dockerization-configuration.outputs.DOCKERIZATION_NEEDED }}
       artifact-id: ${{ steps.entando-core-bom-update.outputs.ARTIFACT_ID }}
       tag-value: ${{ steps.entando-core-bom-update.outputs.TAG_VALUE }}
       matrix-combinations: ${{ steps.dockerization-configuration.outputs.MATRIX_PARAMS_COMBINATIONS }}
-      artifcat-id-to-download: "$UPLOAD_ARTIFACT_NAME"
+      artifcat-id-to-download: ${{ steps.dockerization-configuration.outputs.UPLOAD_ARTIFACT_NAME }}
 
   # dockerization
   dockerization:
