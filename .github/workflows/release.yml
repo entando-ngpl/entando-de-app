@@ -135,7 +135,7 @@ jobs:
           echo "::set-output name=UPLOAD_ARTIFACT_NAME::$REPO_NAME-artifact"
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{ steps.package-ex.outputs.UPLOAD_ARTIFACT_NAME }}
+          name: ${{ steps.package-ext.outputs.UPLOAD_ARTIFACT_NAME }}
           path: ${{ steps.package-ext.outputs.UPLOAD_ARTIFACT_PATH }}
     outputs:
       dockerization-needed: ${{ steps.dockerization-configuration.outputs.DOCKERIZATION_NEEDED }}
