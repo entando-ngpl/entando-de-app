@@ -129,11 +129,10 @@ jobs:
             -m "/pom:project" \
             -v "./pom:packaging" pom.xml) || true
 
-          ls -lR
-
           echo "::set-output name=UPLOAD_ARTIFACT_PATH::./target/${{ steps.entando-core-bom-update.outputs.ARTIFACT_ID }}.$packageExtension"
           echo "::set-output name=UPLOAD_ARTIFACT_NAME::$REPO_NAME-artifact"
-      - uses: actions/upload-artifact@v2
+      - name: "Download artifact"
+        uses: actions/upload-artifact@v2
         with:
           name: ${{ steps.package-ext.outputs.UPLOAD_ARTIFACT_NAME }}
           path: ${{ steps.package-ext.outputs.UPLOAD_ARTIFACT_PATH }}
@@ -142,7 +141,7 @@ jobs:
       artifact-id: ${{ steps.entando-core-bom-update.outputs.ARTIFACT_ID }}
       tag-value: ${{ steps.entando-core-bom-update.outputs.TAG_VALUE }}
       matrix-combinations: ${{ steps.dockerization-configuration.outputs.MATRIX_PARAMS_COMBINATIONS }}
-      artifcat-id-to-download: ${{ steps.dockerization-configuration.outputs.UPLOAD_ARTIFACT_NAME }}
+      artifcat-id-to-download: ${{ steps.package-ext.outputs.UPLOAD_ARTIFACT_NAME }}
 
   # dockerization
   dockerization:
@@ -160,7 +159,8 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - uses: actions/download-artifact@v2
+      - name: "Download artifact"
+        uses: actions/download-artifact@v2
         with:
           name: ${{ needs.release.outputs.artifcat-id-to-download }}
       - name: "Set Docker image name"
