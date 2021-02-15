@@ -12,6 +12,9 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      REPO_NAME: ${{ github.event.repository.name }}
+      UPLOAD_ARTIFACT_NAME: $REPO_NAME-artifact
     steps:
       - name: Dump GitHub context
         env:
@@ -100,9 +103,6 @@ jobs:
           # TODO move this code to a starting step responsible to configure the entire workflow?
           if ls ./Dockerfile* 1> /dev/null 2>&1 ; then
             echo "::set-output name=DOCKERIZATION_NEEDED::true"
-            # the can't export secrets between jobs => the docker organization is added in the next job
-            # echo "::set-output name=ARTIFACT_ID::${{ steps.entando-core-bom-update.outputs.ARTIFACT_ID }}"
-            # echo "::set-output name=TAG_VALUE::${{ steps.entando-core-bom-update.outputs.TAG_VALUE }}"
 
             MATRIX_PARAMS_COMBINATIONS=""
             for f in ./Dockerfile*; do
@@ -119,11 +119,16 @@ jobs:
           else
             eho "NO DOCKER FILE DETECTED"
           fi
+      - uses: actions/upload-artifact@v2
+        with:
+          name: "$UPLOAD_ARTIFACT_NAME"
+          path: target/*.jar
     outputs:
       dockerization-needed: ${{ steps.dockerization-configuration.outputs.DOCKERIZATION_NEEDED }}
       artifact-id: ${{ steps.entando-core-bom-update.outputs.ARTIFACT_ID }}
       tag-value: ${{ steps.entando-core-bom-update.outputs.TAG_VALUE }}
       matrix-combinations: ${{ steps.dockerization-configuration.outputs.MATRIX_PARAMS_COMBINATIONS }}
+      artifcat-id-to-download: "$UPLOAD_ARTIFACT_NAME"
 
   # dockerization
   dockerization:
@@ -135,6 +140,15 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v2
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - uses: actions/download-artifact@v2
+        with:
+          name: ${{ needs.release.outputs.artifcat-id-to-download }}
       - name: "Set Docker image name"
         id: set-docker-image-name
         env:
@@ -143,7 +157,8 @@ jobs:
           TAG_VALUE: ${{ needs.release.outputs.tag-value }}
           MATRIX_COMBINATIONS: ${{ needs.release.outputs.matrix-combinations }}
         run: |
-          mvn --batch-mode package -DskipTests
+          # try to download the jar instead of building it again?
+#          time mvn --batch-mode package -DskipTests
           echo "::set-output name=docker-image-name::${{ secrets.DOCKER_USERNAME }}/$ARTIFACT_ID${{ matrix.docker-suffix }}:$TAG_VALUE"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
