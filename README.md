@@ -12,7 +12,7 @@ Here the command to use and reuse
 mvn clean package jetty:run-war -Pjetty-local -Pderby
 ```
 
-If you want to use keycloak as external authorization service, add the keycloak profile and update the proper variables (you can find them in the `properties` tag in the pomm)
+If you want to use keycloak as external authorization service, add the keycloak profile and update the proper variables (you can find them in the `properties` tag in the pom)
 
 ```
 mvn clean package jetty:run-war -Pjetty-local -Pderby -Pkeycloak

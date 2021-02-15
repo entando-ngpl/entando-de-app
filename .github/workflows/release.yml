@@ -35,12 +35,12 @@ jobs:
           server-id: ng-pipelines
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
-      - name: "Publish package"
-        run: |
-          mvn --batch-mode deploy -DskipTests
-        env:
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+#      - name: "Publish package"
+#        run: |
+#          mvn --batch-mode deploy -DskipTests
+#        env:
+#          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+#          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       - name: "Update entando-core-bom"
         id: entando-core-bom-update
         env:
@@ -131,7 +131,7 @@ jobs:
           echo "::set-output name=UPLOAD_ARTIFACT_NAME::target/$REPO_NAME-artifact"
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{ steps.dockerization-configuration.outputs.UPLOAD_ARTIFACT_NAME }}
+          name: ${{ steps.package-ex.outputs.UPLOAD_ARTIFACT_NAME }}
           path: ${{ steps.package-ext.outputs.UPLOAD_ARTIFACT_PATH }}
     outputs:
       dockerization-needed: ${{ steps.dockerization-configuration.outputs.DOCKERIZATION_NEEDED }}
