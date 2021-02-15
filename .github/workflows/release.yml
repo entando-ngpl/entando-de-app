@@ -131,13 +131,13 @@ jobs:
 
           echo "::set-output name=UPLOAD_ARTIFACT_PATH::./target/${{ steps.entando-core-bom-update.outputs.ARTIFACT_ID }}.$packageExtension"
           echo "::set-output name=UPLOAD_ARTIFACT_NAME::$REPO_NAME-artifact"
-      - name: "Download artifact"
+      - name: "Upload artifact"
         uses: actions/upload-artifact@v2
         with:
           name: ${{ steps.package-ext.outputs.UPLOAD_ARTIFACT_NAME }}
           path: |
             ${{ steps.package-ext.outputs.UPLOAD_ARTIFACT_PATH }}
-            ./target/generated-resources/licenses
+            ./target/generated-resources/licenses/*
     outputs:
       dockerization-needed: ${{ steps.dockerization-configuration.outputs.DOCKERIZATION_NEEDED }}
       artifact-id: ${{ steps.entando-core-bom-update.outputs.ARTIFACT_ID }}
@@ -175,6 +175,7 @@ jobs:
         run: |
           # try to download the jar instead of building it again?
           # time mvn --batch-mode package -DskipTests
+          ls -lR
           echo "::set-output name=docker-image-name::${{ secrets.DOCKER_USERNAME }}/$ARTIFACT_ID${{ matrix.docker-suffix }}:$TAG_VALUE"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
