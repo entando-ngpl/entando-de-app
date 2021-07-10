@@ -56,3 +56,6 @@ jobs:
           ~/ppl-run docker publish "Dockerfile.eap,Dockerfile.wildfly,Dockerfile.wildfly=>wcaent/entando-de-app-exp:v0.0.0" \
             --id "PUBLISH-DOCKER" \
             --lcd "$REPO_FOLDER"
+        env:
+          ENTANDO_OPT_DOCKER_USERNAME: ${{ secrets.ENTANDO_OPT_DOCKER_USERNAME }}
+          ENTANDO_OPT_DOCKER_PASSWORD: ${{ secrets.ENTANDO_OPT_DOCKER_PASSWORD }}
