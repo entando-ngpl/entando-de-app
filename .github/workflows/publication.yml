@@ -53,6 +53,6 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       - name: "Publish docker"
         run: |
-          ~/ppl-run docker publish "" \
+          ~/ppl-run docker publish "Dockerfile.eap,Dockerfile.wildfly,Dockerfile.wildfly=>wcaent/entando-de-app-exp:v0.0.0" \
             --id "PUBLISH-DOCKER" \
             --lcd "$REPO_FOLDER"
